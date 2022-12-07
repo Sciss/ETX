@@ -72,8 +72,9 @@ object ETX {
     soloChannels      = 0 until 0,
     genNumChannels    = 2,
     micInputs         = Vector(
-      NamedBusConfig("m-ld", 0 until 2),
-      NamedBusConfig("m-le", 2 until 4)
+      NamedBusConfig("m-mic", 0 until 2),
+      NamedBusConfig("m-vig", 2 until 4),
+      NamedBusConfig("m-luc", 4 until 6)
     ),
     lineInputs      = Vector.empty,
     lineOutputs     = Vector.empty,
