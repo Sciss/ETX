@@ -124,19 +124,14 @@ object Almat {
       val numFramesIn   = in0.numFrames
       val fileType      = 0 // "out-type"    .attr(0)
       val smpFmt        = 2 // "out-format"  .attr(2)
-//      val gainDb        = -0.2 // "gain-db"     .attr(0.0)
-//      val lenMode       = "len-mode"    .attr(0).clip()
-//      val dir           = 0 // "direction"   .attr(0).clip()
       val dirFFT        = 1 // dir * -2 + (1: GE)  // bwd = -1, fwd = +1
-//      val numFramesOut  = (numFramesIn + lenMode).nextPowerOfTwo / (lenMode + (1: GE))
       val numFramesOut  = numFramesIn.nextPowerOfTwo
       val numFramesInT  = numFramesIn min numFramesOut
-//      val gainAmt       = gainDb.dbAmp
-
       val inT           = in0.take(numFramesInT)
       val inImag  = DC(0.0)
       val inImagT = inImag.take(numFramesInT)
       val inC = inT zip inImagT
+
       val fft = Fourier(inC, size = numFramesInT,
         padding = numFramesOut - numFramesInT, dir = dirFFT)
 
@@ -144,22 +139,27 @@ object Almat {
         ProgressFrames(x, numFramesOut, label)
 
       def normalize(x: GE.D): GE.D = {
-        val rsmpBuf   = BufferDisk(x)
+        val xBuf      = BufferDisk(x)
         val rMax      = RunningMax(Reduce.max(x.abs))
         mkProgress(rMax, "analyze")
         val maxAmp    = rMax.last
+        maxAmp.ampDb.poll("maxAmp")
         val div       = maxAmp + (maxAmp sig_== 0.0).toDouble
         val gainAmtN  = 1.0 /*gainAmt*/ / div
-        rsmpBuf * gainAmtN
+        xBuf * gainAmtN
       }
 
       val re      = fft.complex.real
       val outN    = normalize(re) * 60
       val limLen  = 44100 * 1
       val lim     = Limiter(outN, attack = limLen, release = limLen)
+
+//      lim.out(0).ampDb.poll(Metro(44100), "lim")
+
       // XXX TODO --- why delay > limLen*2 ? (perhaps plus one or two control bufs?)
 //      val sigOut  = BufferMemory(outN, limLen * 2 + 8192) * lim
       val sigOut  = BufferDisk(outN) * lim
+
       val written = AudioFileOut("out", sigOut, fileType = fileType,
         sampleFormat = smpFmt, sampleRate = sr)
       mkProgress(written, "write")
