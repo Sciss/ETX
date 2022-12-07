@@ -24,4 +24,6 @@ Note: the look-and-feel _Submin_ currently doesn't run on JDK 17 -- use JDK 11.
 
 ## network connection
 
-We use _jacktrip_.
+We use [JackTrip](https://github.com/jacktrip/jacktrip/releases). On Debian 11, when using the GUI version of
+JackTrip, you need to use version 1.6.2, newer versions have broken UI (they might need a QT newer than the one
+installed on Debian 11).
