@@ -24,7 +24,7 @@ lazy val deps = new {
   val wolkenpumpe     = "3.11.0"
 }
 
-lazy val mainCl = "de.sciss.anemone.Anemone"
+lazy val mainCl = "de.sciss.etx.ETX"
 
 lazy val assemblySettings = Seq(
   assembly / assemblyJarName := s"${name.value}.jar",
@@ -45,7 +45,7 @@ lazy val root = project.in(file("."))
   .settings(commonSettings)
   .settings(assemblySettings)
   .settings(
-    name := "AnemoneActiniaria",
+    name := "ETX",
     Compile / run / mainClass := Some(mainCl),
     run / fork  := true,
     libraryDependencies ++= Seq(
