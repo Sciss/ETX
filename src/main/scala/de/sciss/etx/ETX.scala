@@ -95,7 +95,7 @@ object ETX {
     }
 
   private def createWorkspace(folder: File): Workspace.Durable =
-    try {
+    {
       val config          = BerkeleyDB.Config()
       config.allowCreate  = true
       val ds              = BerkeleyDB.factory(folder, config)
@@ -174,7 +174,7 @@ class ETX[T <: Txn[T]](config: ETX.Config) extends WolkenpumpeMain[T] {
   override protected def registerProcesses(nuages: Nuages[T], nCfg: Nuages.Config, sCfg: ScissProcs.Config)
                                  (implicit tx: T, universe: Universe[T]): Unit = {
     super.registerProcesses(nuages, nCfg, sCfg)
-    Populate(nuages, nCfg, sCfg)
+    Populate(nuages, this, nCfg, sCfg)
   }
 
   def initTablet(): Unit = {
