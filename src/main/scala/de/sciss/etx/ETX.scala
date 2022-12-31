@@ -83,7 +83,23 @@ object ETX {
     timeline  = true
   )
 
-  private val config: Config = ExpLab
+  lazy val Muna: Config = Config(
+    masterChannels  = 12 until 20,
+    soloChannels    = 0 until 0,
+    genNumChannels  = 4,
+    micInputs = Vector(
+      NamedBusConfig("m-mic", 0 until 2),
+//      NamedBusConfig("m-vig", 2 until 4),
+//      NamedBusConfig("m-luc", 4 until 6)
+    ),
+    lineInputs  = Vector.empty,
+    lineOutputs = Vector.empty,
+    device      = Some("Wolkenpumpe"),
+    database    = None, // Some(mkDatabase(userHome/"Documents"/"projects"/"Anemone"/"sessions")),
+    timeline    = true
+  )
+
+  private val config: Config = Muna
 
   def mkSurface[T <: Txn[T]](config: Config)(implicit tx: T): Surface[T] =
     if (config.timeline) {
